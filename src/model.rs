@@ -10,21 +10,21 @@ pub enum OrderSide {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Order {
-    side: OrderSide,
-    price: u64,
-    quantity: u64,
+    pub side: OrderSide,
+    pub price: u64,
+    pub quantity: u64,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Trade {
-    price: u64,
-    quantity: u64,
+    pub price: u64,
+    pub quantity: u64,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct OrderBook {
-    bids: BTreeMap<u64, Vec<Order>>,
-    asks: BTreeMap<u64, Vec<Order>>,
+    pub bids: BTreeMap<u64, Vec<Order>>,
+    pub asks: BTreeMap<u64, Vec<Order>>,
     pub trades: Vec<Trade>,
 }
 
