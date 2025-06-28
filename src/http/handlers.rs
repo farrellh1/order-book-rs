@@ -1,19 +1,25 @@
-use std::sync::{Arc, Mutex};
-
 use axum::{Json, extract::State, http::StatusCode, response::IntoResponse};
+use crossbeam_channel::Sender;
 
-use crate::model::{Order, OrderBook};
+use crate::model::Order;
 
 pub async fn handle_create_order(
-    State(order_book): State<Arc<Mutex<OrderBook>>>,
+    State(sender): State<Sender<Order>>,
     Json(order): Json<Order>,
 ) -> impl IntoResponse {
     println!("Received order: {:?}", order);
 
-    let mut book = order_book.lock().unwrap();
-    book.process_order(order);
-    (
-        StatusCode::CREATED,
-        Json(serde_json::json!({"message": "Order processed successfully", "trades": book.trades})),
-    )
+    if let Ok(_) = sender.send(order.clone()) {
+        println!("Order sent to channel: {:?}", order);
+        return (
+            StatusCode::ACCEPTED,
+            Json(serde_json::json!({"status": "Order accepted"})),
+        );
+    } else {
+        eprintln!("Failed to send order to channel");
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": "Failed to process order"})),
+        );
+    }
 }
