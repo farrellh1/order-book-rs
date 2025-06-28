@@ -4,8 +4,6 @@ This repository contains a high-performance, in-memory limit order book (LOB) ma
 
 This project was built to demonstrate a deep understanding of systems engineering, concurrency patterns, and the performance-critical requirements of high-frequency trading (HFT) infrastructure.
 
----
-
 ## Architectural Implementations
 
 This repository contains two distinct implementations on separate branches, each demonstrating a different concurrency model and its associated trade-offs.
@@ -16,13 +14,11 @@ This repository contains two distinct implementations on separate branches, each
 * **Pros:** Simple to implement and reason about for basic use cases.
 * **Cons:** The single mutex creates a major performance bottleneck under high load, as all incoming orders must be processed sequentially. This is not suitable for a real HFT environment.
 
-### 2. `main` / `channel-branch` (High-Performance Message-Passing Model)
+### 2. `main` (High-Performance Message-Passing Model)
 
 * **Architecture:** This is the production-ready implementation. It decouples the API from the matching engine using `crossbeam` channels. A dedicated thread owns the `OrderBook`, and the Axum API handlers' only job is to instantly place incoming orders into a channel.
 * **Pros:** Extremely high throughput and low API latency. The server can ingest a massive volume of orders without blocking. This lock-free design is a core pattern used in real-world HFT systems.
 * **Cons:** More complex to set up, requiring careful management of the processing thread and channels.
-
----
 
 ## Features
 
@@ -66,8 +62,8 @@ Performance is a key feature of this project. The core matching logic was benchm
 
 1.  **Clone the repository:**
     ```bash
-    git clone [Your GitHub Repo URL]
-    cd rust-matching-engine
+    git clone https://github.com/farrellh1/order-book-rs.git
+    cd order-book-rs
     ```
 
 2.  **Switch to the desired branch:**
